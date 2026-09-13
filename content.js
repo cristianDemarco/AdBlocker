@@ -7,7 +7,6 @@ const AD_SELECTORS = [
   '[class*="outbrain"]',
   '[class*="advertisement"]',
 ];
-
 function hideAdElements() {
   const elements = document.querySelectorAll(AD_SELECTORS.join(","));
   elements.forEach((el) => {

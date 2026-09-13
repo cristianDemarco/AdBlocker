@@ -1,4 +1,18 @@
-async function updateBlockedCount() {
+async function loadPopupData() {
+  let text = document.createElement("h2");
+  let stats = await chrome.storage.local.get([
+    "lastMatchedCount",
+    "totalBlocked",
+    "blockedToday",
+  ]);
+  text.textContent = `Match: ${stats.lastMatchedCount}\n
+  Totale oggi: ${stats.totalBlocked}\n
+  Bloccati oggi: ${stats.blockedToday}`;
+  let header = document.getElementById("intro");
+  header.insertAdjacentElement("afterend", text);
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
   const rules = await chrome.declarativeNetRequest.getMatchedRules();
   const count = rules.rulesMatchedInfo?.length || 0;
   const stored = await chrome.storage.local.get([
@@ -14,10 +28,6 @@ async function updateBlockedCount() {
       blockedToday: (stored.blockedToday || 0) + newMatches,
     });
   }
-}
-
-setInterval(updateBlockedCount, 3000);
-chrome.declarativeNetRequest.updateEnabledRulesets({
-  enableRulesetIds: ["easylist_ads", "easylist_trackers", "easylist_popups"],
-  disableRulesetIds: [],
 });
+
+loadPopupData();
